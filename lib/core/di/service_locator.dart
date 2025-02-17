@@ -11,7 +11,9 @@ Future<void> setUpLocator() async {
   serviceLocator
       .registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   //Auth Repository
-  serviceLocator.resetLazySingleton<AuthRepository>(() => AuthRepositoryImpl);
+  serviceLocator
+      .registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
   //BLOC
-  serviceLocator.resetLazySingleton(instance: () => LoginBloc());
+  serviceLocator.registerLazySingleton(
+      () => LoginBloc(authRepository: serviceLocator<AuthRepository>()));
 }

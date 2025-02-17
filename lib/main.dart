@@ -4,6 +4,7 @@ import 'package:customer_e_commerce/core/router/app_router.dart';
 import 'package:customer_e_commerce/core/router/my_routes.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork/connectivity_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/NetworkError/network_error_screen.dart';
+import 'package:customer_e_commerce/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    /*return BlocProvider(
+    return BlocProvider(
       create: (context) => ConnectivityBloc(Connectivity()),
       child: BlocBuilder<ConnectivityBloc, ConnectivityState>(
         builder: (context, state) {
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
             // connectivityBloc.lastvisitedRoute =
             //     router.routerDelegate.currentConfiguration.fullPath;
             // router.go(MyRoutes.networkerrorRoute);
-            return MaterialApp.router(
+            return MaterialApp(
               builder: (context, widget) {
                 return NetworkErrorScreen();
               },
@@ -43,16 +44,20 @@ class _MyAppState extends State<MyApp> {
           }
           return MaterialApp.router(
             routerConfig: AppRouter.router,
+            builder: (context, child) {
+              SizeConfig.initSize(context);
+              return child ?? SizedBox();
+            },
             debugShowMaterialGrid: false,
           );
         },
       ),
-    ); */
-    return BlocProvider(
+    );
+    /* return BlocProvider(
       create: (context) => ConnectivityBloc(Connectivity()),
       child: MaterialApp.router(
         routerConfig: AppRouter.router,
       ),
-    );
+    ); */
   }
 }
