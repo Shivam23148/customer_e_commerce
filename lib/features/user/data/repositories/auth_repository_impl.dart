@@ -45,7 +45,9 @@ class AuthRepositoryImpl implements AuthRepository {
           email: email, password: password);
 
       // Send email verification after successful registration
-      await result.user!.sendEmailVerification();
+      if (result.user != null || !result.user!.emailVerified) {
+        await result.user!.sendEmailVerification();
+      }
       return result.user!;
     } on FirebaseAuthException catch (e) {
       _showToast(e.message ?? "Registration failed. Please try again.");
