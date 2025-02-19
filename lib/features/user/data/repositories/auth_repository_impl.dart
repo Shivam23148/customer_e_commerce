@@ -1,4 +1,5 @@
 import 'package:customer_e_commerce/core/di/service_locator.dart';
+import 'package:customer_e_commerce/core/theme/app_colors.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   void _showToast(String message) {
     Fluttertoast.showToast(
+        backgroundColor: AppColors.primary,
         msg: message,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.SNACKBAR,
@@ -21,13 +23,6 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-
-      // Check if the email is verified
-      if (!result.user!.emailVerified) {
-        throw FirebaseAuthException(
-            code: "email-not-verified",
-            message: "Email is not verified. Please check your email.");
-      }
 
       return result.user!;
     } on FirebaseAuthException catch (e) {

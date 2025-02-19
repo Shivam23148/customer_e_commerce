@@ -1,5 +1,6 @@
 import 'package:customer_e_commerce/core/router/my_routes.dart';
 import 'package:customer_e_commerce/core/theme/app_colors.dart';
+import 'package:customer_e_commerce/core/utils/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void navigateToHomeScreen() async {
     await Future.delayed(Duration(milliseconds: 1800));
-    GoRouter.of(context).go(MyRoutes.homeRoute);
+    GoRouter.of(context).go(MyRoutes.loginRoute);
   }
 
   @override
@@ -27,16 +28,16 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
         backgroundColor: AppColors.primary,
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("lib/core/assets/chips_admin_icon.png"),
-                Image.asset("lib/core/assets/chips_admin_text_image.png")
+                Image.asset(AssetsManager.chipsAdminIcon),
+                Image.asset(AssetsManager.chipsAdminTextImage)
               ],
             ),
-            Image.asset("lib/core/assets/chips_image.png")
+            Image.asset(AssetsManager.chipsImage)
           ],
         ));
   }
