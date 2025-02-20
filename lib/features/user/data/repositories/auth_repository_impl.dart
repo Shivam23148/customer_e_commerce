@@ -1,5 +1,6 @@
 import 'package:customer_e_commerce/core/di/service_locator.dart';
 import 'package:customer_e_commerce/core/theme/app_colors.dart';
+import 'package:customer_e_commerce/core/utils/toast_util.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return result.user!;
     } on FirebaseAuthException catch (e) {
-      _showToast(e.message ?? "Login failed. Please try again.");
+      ToastUtil.showToast(
+          e.message ?? "Login failed. Please try again.", AppColors.primary);
       throw Exception(e.message ?? "Login failed. Please try again.");
     } catch (e) {
       throw Exception("An unexpected error occurred: $e");
@@ -34,6 +36,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<User> register(String email, String password) async {
+    final user = _firebaseAuth.currentUser;
+    return user!;
+  }
+
+  /* @override
   Future<User> register(String email, String password) async {
     try {
       final result = await _firebaseAuth.createUserWithEmailAndPassword(
@@ -50,6 +58,26 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       throw Exception("An unexpected error occurred: $e");
     }
+  } */
+
+  @override
+  Future<User?> completeRegisteration(String email, String password) async {
+    try {
+      final result = _firebaseAuth.currentUser;
+      if (result != null && result.emailVerified) {
+        await result.updatePassword(password);
+      } else {
+        _showToast("Email is not verified");
+      }
+      return result;
+    } on FirebaseAuthException catch (e) {
+      ToastUtil.showToast(
+          e.message ?? "Registeration unable to compelete try again later",
+          AppColors.primary);
+    } catch (e) {
+      rethrow;
+    }
+    return null;
   }
 
   @override
@@ -57,7 +85,8 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _firebaseAuth.signOut();
     } catch (e) {
-      _showToast("Failed to logout. Please try again.");
+      ToastUtil.showToast(
+          "Failed to logout. Please try again.", AppColors.primary);
       throw Exception("Failed to logout. Please try again.");
     }
   }
@@ -88,20 +117,25 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> resendVerificationEmail() async {
     try {
-      await sendEmailVerificaiton();
+      // await sendEmailVerificaiton();
     } catch (e) {
       throw Exception("Failed to resend verification email.");
     }
   }
 
   @override
-  Future<void> sendEmailVerificaiton() async {
+  Future<void> sendEmailVerificaiton(String email) async {
     try {
-      final user = _firebaseAuth.currentUser;
-      if (user != null && !user.emailVerified) {
-        await user.sendEmailVerification();
-        _showToast("Verification email sent successfully.");
+      final result = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: "TempPassword@123");
+      if (result.user != null) {
+        await result.user?.sendEmailVerification();
+        ToastUtil.showToast(
+            "Verification email sent successfully.", AppColors.primary);
       }
+    } on FirebaseAuthException catch (e) {
+      ToastUtil.showToast(
+          e.message ?? "Can't send verification", AppColors.primary);
     } catch (e) {
       throw Exception("Failed to send verification email.");
     }

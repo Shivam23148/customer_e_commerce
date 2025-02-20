@@ -1,5 +1,6 @@
 import 'package:customer_e_commerce/core/di/service_locator.dart';
 import 'package:customer_e_commerce/core/router/my_routes.dart';
+import 'package:customer_e_commerce/core/theme/app_colors.dart';
 import 'package:customer_e_commerce/core/utils/validators.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/widgets/my_elevated_button.dart';
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0XFFF6FF50),
+                  color: AppColors.secondary,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 width: getRelativeWidth(0.9),
@@ -66,11 +67,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text(
-                          "Login",
+                          "LOGIN",
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Color(0XFFFD4040),
+                            color: AppColors.primary,
                           ),
                         ),
                         SizedBox(height: getRelativeHeight(0.03)),

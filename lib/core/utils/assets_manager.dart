@@ -6,4 +6,8 @@ class AssetsManager {
   static const String chipsAdminTextImage =
       "$basePath/splash/chips_admin_text_image.png";
   static const String chipsImage = "$basePath/splash/chips_image.png";
+
+  //Register
+  static const String emailverification =
+      "$basePath/register/email_verification.json";
 }
