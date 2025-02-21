@@ -20,4 +20,27 @@ class Validators {
     }
     return null;
   }
+
+  static String? validateName(String? name) {
+    if (name == null || name.trim().isEmpty) {
+      return 'Name is required';
+    }
+    if (!RegExp(r"^[a-zA-Z]+$").hasMatch(name)) {
+      return 'Only alphabets are allowed';
+    }
+    if (name.length < 2) {
+      return 'Must be at least 2 characters long';
+    }
+    return null;
+  }
+
+  static String? validatePhone(String? phone) {
+    if (phone == null || phone.trim().isEmpty) {
+      return 'Phone number is required';
+    }
+    if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
+      return 'Enter a valid 10-digit phone number';
+    }
+    return null;
+  }
 }

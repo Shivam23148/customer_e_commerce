@@ -6,6 +6,7 @@ import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork
 import 'package:customer_e_commerce/features/user/presentation/bloc/Register/register_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/NetworkError/network_error_screen.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/ProfileSetup/profile_setup_screen.dart';
 import 'package:customer_e_commerce/firebase_options.dart';
 import 'package:customer_e_commerce/size_config.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,7 +42,7 @@ class _MyAppState extends State<MyApp> {
       child: BlocBuilder<ConnectivityBloc, ConnectivityState>(
         builder: (context, state) {
           print("Main file state is ${state}");
-          final connectivityBloc = context.read<ConnectivityBloc>();
+          /* final connectivityBloc = context.read<ConnectivityBloc>();
 
           if (state is ConnectivityDisconnected) {
             // connectivityBloc.lastvisitedRoute =
@@ -60,7 +61,11 @@ class _MyAppState extends State<MyApp> {
               return child ?? SizedBox();
             },
             debugShowMaterialGrid: false,
-          );
+          ); */
+          return MaterialApp(builder: (context, widget) {
+            SizeConfig.initSize(context);
+            return ProfileSetupScreen();
+          });
         },
       ),
     );
