@@ -51,7 +51,7 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
           if (state is RegistrationCompletedState) {
             ToastUtil.showToast(
                 "Registration Successful!", AppColors.textPrimary);
-            GoRouter.of(context).go(MyRoutes.homeRoute);
+            GoRouter.of(context).go(MyRoutes.profilesetupRoute);
           }
         },
         child: Form(

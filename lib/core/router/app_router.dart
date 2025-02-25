@@ -60,6 +60,7 @@ class RoutesObserver extends NavigatorObserver {
 
 import 'package:customer_e_commerce/core/router/my_routes.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork/connectivity_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/ProfileSetup/profile_setup_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/Register/registered_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/NetworkError/network_error_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/Home/home_screen.dart';
@@ -106,6 +107,10 @@ class AppRouter {
       GoRoute(
         path: MyRoutes.homeRoute,
         builder: (context, state) => HomeScreen(),
+      ),
+      GoRoute(
+        path: MyRoutes.profilesetupRoute,
+        builder: (context, state) => ProfileSetupScreen(),
       ),
     ],
   );
