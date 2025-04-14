@@ -13,4 +13,7 @@ class MyRoutes {
 
   //home
   static const String homeRoute = "/home";
+
+  //Test
+  static const String addresspopupRoute = "/addresspopup";
 }

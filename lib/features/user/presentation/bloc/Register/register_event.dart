@@ -2,6 +2,8 @@ part of 'register_bloc.dart';
 
 abstract class RegisterEvent {}
 
+class ResetRegisterStateEvent extends RegisterEvent {}
+
 class SendVerificationEmailEvent extends RegisterEvent {
   final String email;
 

@@ -43,4 +43,21 @@ class Validators {
     }
     return null;
   }
+
+  static String? validateAddress(String? address) {
+    if (address == null || address.trim().isEmpty) {
+      return 'Address is required';
+    }
+    return null;
+  }
+
+  static String? validateZipCode(String? zipCode) {
+    if (zipCode == null || zipCode.trim().isEmpty) {
+      return 'Zip code is required';
+    }
+    if (!RegExp(r'^[1-9]{1}[0-9]{5}$').hasMatch(zipCode)) {
+      return 'Enter a valid 6-digit Indian zip code';
+    }
+    return null;
+  }
 }

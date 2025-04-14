@@ -131,7 +131,7 @@ class AuthRepositoryImpl implements AuthRepository {
       if (result.user != null) {
         await result.user?.sendEmailVerification();
         ToastUtil.showToast(
-            "Verification email sent successfully.", AppColors.primary);
+            "Verification email sent successfully.", AppColors.successColor);
       }
     } on FirebaseAuthException catch (e) {
       ToastUtil.showToast(

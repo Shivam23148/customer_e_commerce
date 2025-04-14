@@ -3,6 +3,7 @@ import 'package:customer_e_commerce/core/theme/app_colors.dart';
 import 'package:customer_e_commerce/core/utils/assets_manager.dart';
 import 'package:customer_e_commerce/core/utils/toast_util.dart';
 import 'package:customer_e_commerce/core/utils/validators.dart';
+import 'package:customer_e_commerce/features/user/data/models/auth_data.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Register/register_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/widgets/my_elevated_button.dart';
 import 'package:customer_e_commerce/size_config.dart';
@@ -25,6 +26,13 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   bool _obscureText = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<RegisterBloc>().add(ResetRegisterStateEvent());
+  }
 
   @override
   void dispose() {
@@ -51,7 +59,9 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
           if (state is RegistrationCompletedState) {
             ToastUtil.showToast(
                 "Registration Successful!", AppColors.textPrimary);
-            GoRouter.of(context).go(MyRoutes.profilesetupRoute);
+            GoRouter.of(context).go(MyRoutes.profilesetupRoute,
+                extra: AuthData(_emailController.text.trim(),
+                    _passwordController.text.trim()));
           }
         },
         child: Form(

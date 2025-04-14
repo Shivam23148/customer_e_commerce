@@ -47,5 +47,14 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         rethrow;
       }
     });
+    on<ResetRegisterStateEvent>((event, emit) {
+      _timer?.cancel(); // Cancel any ongoing timer
+      emit(RegisterInitial()); // Emit the initial state
+    });
+  }
+  @override
+  Future<void> close() {
+    _timer?.cancel(); // Ensure the timer is cancelled when the bloc is closed
+    return super.close();
   }
 }

@@ -7,6 +7,7 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepository authRepository;
   LoginBloc({required this.authRepository}) : super(LoginInitial()) {
+    print("Login Bloc initialized");
     on<LoginSubmitted>((event, emit) async {
       emit(LoginLoading());
       try {
@@ -16,5 +17,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginFailure(errorMessage: e.toString()));
       }
     });
+  }
+  @override
+  Future<void> close() {
+    print("❌ LoginBloc CLOSED"); // Check when this happens
+    return super.close();
   }
 }

@@ -2,20 +2,23 @@ part of 'profile_setup_bloc.dart';
 
 abstract class ProfileSetupEvent {}
 
-class SaveBasicInfoEvent extends ProfileSetupEvent {
-  final String name, phone;
+class ProfileResetEvent extends ProfileSetupEvent {}
 
-  SaveBasicInfoEvent({required this.name, required this.phone});
+class SaveBasicInfoEvent extends ProfileSetupEvent {
+  final Profile profileData;
+
+  SaveBasicInfoEvent({required this.profileData});
 }
 
-class SaveAddressEvent extends ProfileSetupEvent {
-  final String house, buildingNo, landmark, city, state, zip;
+class RequestLocationPermissionEvent extends ProfileSetupEvent {}
 
-  SaveAddressEvent(
-      {required this.house,
-      required this.buildingNo,
-      required this.landmark,
-      required this.city,
-      required this.state,
-      required this.zip});
+class FetchLocationAddressEvent extends ProfileSetupEvent {}
+
+class CheckLocationServiceEvent extends ProfileSetupEvent {}
+
+class SaveAddressEvent extends ProfileSetupEvent {
+  final UserAddress address;
+  final bool isManualEntry;
+
+  SaveAddressEvent(this.address, {this.isManualEntry = false});
 }

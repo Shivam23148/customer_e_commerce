@@ -34,79 +34,76 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => serviceLocator<LoginBloc>(),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(backgroundColor: Colors.white),
-        body: Form(
-          key: _formSignKey,
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: getRelativeWidth(0.05)),
-              child: Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.secondary,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                width: getRelativeWidth(0.9),
-                child: SingleChildScrollView(
-                  child: BlocListener<LoginBloc, LoginState>(
-                    listener: (context, state) {
-                      if (state is LoginSuccess) {
-                        GoRouter.of(context).go(MyRoutes.homeRoute);
-                      } else if (state is LoginFailure) {
-                        /*  ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(state.errorMessage)),
-                        ); */
-                        print("Login Failure${state.errorMessage}");
-                      }
-                    },
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text(
-                          "LOGIN",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(backgroundColor: Colors.white),
+      body: Form(
+        key: _formSignKey,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: getRelativeWidth(0.05)),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.secondary,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              width: getRelativeWidth(0.9),
+              child: SingleChildScrollView(
+                child: BlocListener<LoginBloc, LoginState>(
+                  listener: (context, state) {
+                    if (state is LoginSuccess) {
+                      GoRouter.of(context).go(MyRoutes.homeRoute);
+                    } else if (state is LoginFailure) {
+                      /*  ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.errorMessage)),
+                      ); */
+                      print("Login Failure${state.errorMessage}");
+                    }
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        "LOGIN",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
                         ),
-                        SizedBox(height: getRelativeHeight(0.03)),
-                        const Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Email",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                        _EmailField(context),
-                        SizedBox(height: getRelativeHeight(0.02)),
-                        const Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Password",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                        _PasswordField(context),
-                        SizedBox(height: getRelativeHeight(0.03)),
-                        _LoginButton(context),
-                        SizedBox(height: getRelativeHeight(0.02)),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Doesn’t have account? "),
-                            GestureDetector(
-                              onTap: () => GoRouter.of(context)
-                                  .pushReplacement(MyRoutes.registerRoute),
-                              child: const Text(
-                                "Create New Account",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
+                      ),
+                      SizedBox(height: getRelativeHeight(0.03)),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text("Email",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                      _EmailField(context),
+                      SizedBox(height: getRelativeHeight(0.02)),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text("Password",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                      _PasswordField(context),
+                      SizedBox(height: getRelativeHeight(0.03)),
+                      _LoginButton(context),
+                      SizedBox(height: getRelativeHeight(0.02)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Doesn’t have account? "),
+                          GestureDetector(
+                            onTap: () => GoRouter.of(context)
+                                .pushReplacement(MyRoutes.registerRoute),
+                            child: const Text(
+                              "Create New Account",
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                          ],
-                        )
-                      ],
-                    ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -157,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         "Email:${_emailController.text}  :  Password:${_passwordController.text}");
                     final email = _emailController.text.trim();
                     final password = _passwordController.text.trim();
+
                     context
                         .read<LoginBloc>()
                         .add(LoginSubmitted(email: email, password: password));

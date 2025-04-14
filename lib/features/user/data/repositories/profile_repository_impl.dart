@@ -1,43 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customer_e_commerce/core/di/service_locator.dart';
+import 'package:customer_e_commerce/features/user/data/models/address_model.dart';
+import 'package:customer_e_commerce/features/user/data/models/profile_models.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/profile_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileRepositoryImpl extends ProfileRepository {
+  final profileRef = serviceLocator<CollectionReference>(instanceName: 'users');
   final FirebaseAuth firebaseAuth;
   final FirebaseFirestore firestore;
 
   ProfileRepositoryImpl({required this.firestore, required this.firebaseAuth});
   @override
-  Future<void> saveBasicInfo(String name, String phone) async {
+  Future<void> saveBasicInfo(Profile profile) async {
     String uid = firebaseAuth.currentUser!.uid;
+
     try {
-      await firestore.collection('users').doc(uid).set({
-        'name': name,
-        'phone': phone,
-        'email': firebaseAuth.currentUser!.email,
-      });
+      await profileRef.doc(uid).set(profile.toJson(), SetOptions(merge: true));
+    } on FirebaseAuthException catch (e) {
+      throw Exception('Authentication error: ${e.message}');
     } on FirebaseException catch (e) {
-      print("Firestore Error: ${e.message}");
+      throw Exception('Firestore error: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
     }
   }
 
   @override
-  Future<void> saveAddress(String house, String buildingNo, String landmark,
-      String city, String state, String zip) async {
+  Future<void> saveAddress(UserAddress address) async {
     String uid = firebaseAuth.currentUser!.uid;
     try {
-      await firestore.collection('users').doc(uid).set({
-        'address': {
-          'houseNo': house,
-          'buildingNo.': buildingNo,
-          'landmark': landmark,
-          'city': city,
-          'state': state,
-          'zip': zip
-        }
-      });
+      await profileRef.doc(uid).set(
+        {'address': address.toJson()},
+        SetOptions(merge: true),
+      );
     } on FirebaseException catch (e) {
-      print("Firestore Error: ${e.message}");
+      throw Exception("Firestore Error: ${e.message}");
+    } catch (e) {
+      throw Exception("Unexpected Error: $e");
     }
   }
 }
