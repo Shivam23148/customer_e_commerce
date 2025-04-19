@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: BlocListener<LoginBloc, LoginState>(
                   listener: (context, state) {
                     if (state is LoginSuccess) {
-                      GoRouter.of(context).go(MyRoutes.homeRoute);
+                      GoRouter.of(context).go(MyRoutes.mainScreenRoute);
                     } else if (state is LoginFailure) {
                       /*  ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(state.errorMessage)),

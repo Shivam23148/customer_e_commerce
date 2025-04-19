@@ -3,17 +3,21 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:customer_e_commerce/core/services/geolocator_service.dart';
 import 'package:customer_e_commerce/features/user/data/repositories/address_repository_impl.dart';
 import 'package:customer_e_commerce/features/user/data/repositories/auth_repository_impl.dart';
+import 'package:customer_e_commerce/features/user/data/repositories/cart_repository.dart';
 import 'package:customer_e_commerce/features/user/data/repositories/profile_repository_impl.dart';
 import 'package:customer_e_commerce/features/user/data/repositories/shop_repositry_impl.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/profile_repository.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Auth/auth_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Cart/cart_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork/connectivity_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/ProfileSetup/profile_setup_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Register/register_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final serviceLocator = GetIt.instance;
 
@@ -24,6 +28,11 @@ Future<void> setUpLocator() async {
   //Firebase Firestore
   serviceLocator.registerLazySingleton<FirebaseFirestore>(
       () => FirebaseFirestore.instance);
+
+  //Shared Preferences
+  final sharedPrefernces = await SharedPreferences.getInstance();
+  serviceLocator
+      .registerLazySingleton<SharedPreferences>(() => sharedPrefernces);
 
   //Collection Reference
   //Profile
@@ -42,7 +51,8 @@ Future<void> setUpLocator() async {
   //Connectivity
   final connectivity = Connectivity();
   serviceLocator.registerLazySingleton<Connectivity>(() => connectivity);
-  serviceLocator.registerLazySingleton(() => ConnectivityBloc(connectivity));
+  serviceLocator.registerLazySingleton(
+      () => ConnectivityBloc(serviceLocator<Connectivity>()));
 
   //Repository
   //Auth Repository
@@ -57,6 +67,8 @@ Future<void> setUpLocator() async {
   serviceLocator.registerLazySingleton(() => ShopRepository());
   //Address Repository
   serviceLocator.registerLazySingleton(() => AddressRepositoryImpl());
+  //Cart Repository
+  serviceLocator.registerLazySingleton(() => CartRepository());
 
   //Service
   //Geolocator Service
@@ -74,4 +86,8 @@ Future<void> setUpLocator() async {
       () => RegisterBloc(serviceLocator<AuthRepository>()));
   //Profile Setup
   serviceLocator.registerLazySingleton(() => ProfileSetupBloc());
+  //Shop
+  serviceLocator.registerLazySingleton(() => ShopBloc());
+  //Cart
+  serviceLocator.registerLazySingleton(() => CartBloc());
 }

@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final authbloc = context.read<AuthBloc>();
     final state = authbloc.state;
     if (state is AuthAuthenticated) {
-      GoRouter.of(context).go(MyRoutes.homeRoute);
+      GoRouter.of(context).go(MyRoutes.mainScreenRoute);
     } else {
       GoRouter.of(context).go(MyRoutes.loginRoute);
     }

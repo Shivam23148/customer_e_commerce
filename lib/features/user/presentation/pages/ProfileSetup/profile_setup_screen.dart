@@ -96,7 +96,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                     if (state is ProfileSaved) {
                       ToastUtil.showToast(
                           "Information Saved", AppColors.background);
-                      GoRouter.of(context).go(MyRoutes.homeRoute);
+                      GoRouter.of(context).go(MyRoutes.mainScreenRoute);
                     }
                     if (state is ProfileError) {
                       ToastUtil.showToast(state.message, AppColors.primary);

@@ -12,11 +12,12 @@ class AddressRepositoryImpl {
       final userId = serviceLocator<FirebaseAuth>().currentUser?.uid;
       final snapshot = await userRef
           .doc(userId)
-          .collection('addresses')
+          .collection('address')
           .orderBy('lastUpdated', descending: true)
           .get();
+      print("User Address snapshot: ${snapshot.docs}");
       return snapshot.docs
-          .map((doc) => UserAddress.fromFirestore(doc.data(), doc.id))
+          .map((doc) => UserAddress.fromFirestore(doc.data()))
           .toList();
     } catch (e) {
       throw Exception("Error getting user addresses: $e");

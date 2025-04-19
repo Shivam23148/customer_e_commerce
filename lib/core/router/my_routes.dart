@@ -14,6 +14,9 @@ class MyRoutes {
   //home
   static const String homeRoute = "/home";
 
+  //Main
+  static const String mainScreenRoute = "/mainScreen";
+
   //Test
   static const String addresspopupRoute = "/addresspopup";
 }

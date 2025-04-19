@@ -28,9 +28,8 @@ class UserAddress {
   });
 
   // Create User Address object from a Firestore document (map)
-  factory UserAddress.fromFirestore(Map<String, dynamic> data, String id) {
+  factory UserAddress.fromFirestore(Map<String, dynamic> data) {
     return UserAddress(
-      id: id,
       houseNo: data['houseNo'] as String? ?? '',
       street: data['street'] as String? ?? '',
       landmark: data['landmark'] as String? ?? '',
@@ -91,5 +90,18 @@ class UserAddress {
       addressType: addressType ?? this.addressType,
       lastUpdated: lastUpdated ?? this.lastUpdated,
     );
+  }
+
+  String get formattedAddress {
+    final buffer = StringBuffer();
+    if (houseNo?.isNotEmpty ?? false) buffer.write('$houseNo,');
+    if (street?.isNotEmpty ?? false) buffer.write('$street, ');
+    if (landmark?.isNotEmpty ?? false) buffer.write('$landmark, ');
+    if (city?.isNotEmpty ?? false) buffer.write('$city, ');
+    if (state?.isNotEmpty ?? false) buffer.write('$state, ');
+    if (country?.isNotEmpty ?? false) buffer.write('$country');
+    if (zip?.isNotEmpty ?? false) buffer.write(' - $zip');
+
+    return buffer.toString().trim().replaceAll(RegExp(r',\s*$'), '');
   }
 }

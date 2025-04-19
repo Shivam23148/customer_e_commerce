@@ -3,9 +3,11 @@ import 'package:customer_e_commerce/core/di/service_locator.dart';
 import 'package:customer_e_commerce/core/router/app_router.dart';
 import 'package:customer_e_commerce/core/router/my_routes.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Auth/auth_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Cart/cart_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork/connectivity_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/ProfileSetup/profile_setup_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Register/register_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/NetworkError/network_error_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/ProfileSetup/dummy_profile_setup_screen.dart';
@@ -43,11 +45,13 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => serviceLocator<LoginBloc>()),
         BlocProvider(create: (context) => serviceLocator<RegisterBloc>()),
         BlocProvider(create: (context) => serviceLocator<ProfileSetupBloc>()),
+        BlocProvider(create: (context) => serviceLocator<ShopBloc>()),
         BlocProvider(
           create: (context) => AuthBloc()
             ..add(AuthUserChanged(serviceLocator<FirebaseAuth>()
                 .currentUser)), // Initialize AuthBloc
         ),
+        BlocProvider(create: (context) => serviceLocator<CartBloc>()),
       ],
       child: BlocBuilder<ConnectivityBloc, ConnectivityState>(
         builder: (context, state) {

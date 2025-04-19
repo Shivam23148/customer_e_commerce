@@ -66,6 +66,7 @@ import 'package:customer_e_commerce/features/user/presentation/bloc/Auth/auth_bl
 import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork/connectivity_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/AddressPopup/address_pop_up_testscreen.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/MainScreen/main_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/ProfileSetup/profile_setup_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/Register/registered_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/NetworkError/network_error_screen.dart';
@@ -148,6 +149,10 @@ class AppRouter {
             password: authData.password,
           );
         },
+      ),
+      GoRoute(
+        path: MyRoutes.mainScreenRoute,
+        builder: (context, state) => MainScreen(),
       ),
 
       //Test

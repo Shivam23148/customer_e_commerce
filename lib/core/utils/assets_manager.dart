@@ -10,4 +10,8 @@ class AssetsManager {
   //Register
   static const String emailverification =
       "$basePath/register/email_verification.json";
+
+  //Home
+  static const String homeIcon = "$basePath/home/home_icon.png";
+  static const String notificaitonIcon = "$basePath/home/notification_icon.png";
 }

@@ -30,10 +30,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
   Future<void> saveAddress(UserAddress address) async {
     String uid = firebaseAuth.currentUser!.uid;
     try {
-      await profileRef.doc(uid).set(
-        {'address': address.toJson()},
-        SetOptions(merge: true),
-      );
+      await profileRef.doc(uid).collection("address").add(address.toJson());
     } on FirebaseException catch (e) {
       throw Exception("Firestore Error: ${e.message}");
     } catch (e) {

@@ -39,4 +39,16 @@ class Product {
       'createdAt': createdAt
     };
   }
+
+  //deserialize from local JSON
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      productId: json['productId'] ?? '',
+      productName: json['productName'] ?? '',
+      productDescription: json['productDescription'] ?? '',
+      productPrice: (json['productPrice'] as num?)?.toDouble() ?? 0.0,
+      productimageUrl: json['productimageUrl'] ?? '',
+      createdAt: Timestamp.fromDate(DateTime.parse(json['createdAt'])),
+    );
+  }
 }

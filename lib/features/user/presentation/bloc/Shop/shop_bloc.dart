@@ -21,48 +21,47 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
       serviceLocator<AddressRepositoryImpl>();
 
   ShopBloc() : super(ShopState()) {
-    on<ShopEvent>((event, emit) {
-      on<LoadUserAddresses>((event, emit) async {
-        emit(state.copyWith(isLoading: true));
-        try {
-          final address = await addressRepository.getUserAddresses();
-          emit(state.copyWith(userAddresses: address, isLoading: false));
-        } catch (e) {
-          emit(state.copyWith(
-              isLoading: false, errorMessage: "Failed to load addresses"));
-          throw Exception("Failed to load addresses: $e");
-        }
-      });
-      on<SelectAddressEvent>((event, emit) {
-        emit(state.copyWith(selectedAddress: event.address));
-        emit(state.copyWith(isLoading: true));
-      });
-      on<CalculateNearestShopEvent>((event, emit) async {
-        emit(state.copyWith(isLoading: true));
-        try {
-          final userGeoPoint = state.selectedAddress?.location;
-          if (userGeoPoint == null) {
-            emit(state.copyWith(
-                isLoading: false,
-                errorMessage: "User location is not available"));
-            return;
-          }
-          final shopwithProducts =
-              await shopRepository.getNearestShopWithProducts(userGeoPoint);
-          final distance =
-              _calculateDistance(userGeoPoint, shopwithProducts.shop.location!);
+    on<LoadUserAddresses>((event, emit) async {
+      print("LoadUserAddresses event called");
+      emit(state.copyWith(isLoading: true));
+      try {
+        final address = await addressRepository.getUserAddresses();
+        emit(state.copyWith(userAddresses: address, isLoading: false));
+      } catch (e) {
+        emit(state.copyWith(
+            isLoading: false, errorMessage: "Failed to load addresses"));
+        throw Exception("Failed to load addresses: $e");
+      }
+    });
+    on<SelectAddressEvent>((event, emit) {
+      emit(state.copyWith(selectedAddress: event.address));
+      emit(state.copyWith(isLoading: true));
+    });
+    on<CalculateNearestShopEvent>((event, emit) async {
+      emit(state.copyWith(isLoading: true));
+      try {
+        final userGeoPoint = state.selectedAddress?.location;
+        if (userGeoPoint == null) {
           emit(state.copyWith(
               isLoading: false,
-              shopWithProducts: shopwithProducts,
-              distance: distance,
-              selectedAddress: event.userAddress));
-        } catch (e) {
-          emit(state.copyWith(
-              isLoading: false,
-              errorMessage: "Failed to calculate nearest shop"));
-          throw Exception("Failed to calculate nearest shop: $e");
+              errorMessage: "User location is not available"));
+          return;
         }
-      });
+        final shopwithProducts =
+            await shopRepository.getNearestShopWithProducts(userGeoPoint);
+        final distance =
+            _calculateDistance(userGeoPoint, shopwithProducts.shop.location!);
+        emit(state.copyWith(
+            isLoading: false,
+            shopWithProducts: shopwithProducts,
+            distance: distance,
+            selectedAddress: event.userAddress));
+      } catch (e) {
+        emit(state.copyWith(
+            isLoading: false,
+            errorMessage: "Failed to calculate nearest shop"));
+        throw Exception("Failed to calculate nearest shop: $e");
+      }
     });
 
     on<RefereshShopDataEvent>((event, emit) async {
@@ -104,7 +103,6 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
             sin(dLon / 2) *
             sin(dLon / 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
     return earthRadius * c;
   }
 
