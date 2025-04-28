@@ -61,12 +61,15 @@ class RoutesObserver extends NavigatorObserver {
 import 'package:customer_e_commerce/core/di/service_locator.dart';
 import 'package:customer_e_commerce/core/router/my_routes.dart';
 import 'package:customer_e_commerce/features/user/data/models/auth_data.dart';
+import 'package:customer_e_commerce/features/user/data/models/product_detail_data.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Auth/auth_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork/connectivity_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/AddressPopup/address_pop_up_testscreen.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/Cart/cart_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/MainScreen/main_screen.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/ProductDetail/product_detail_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/ProfileSetup/profile_setup_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/Register/registered_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/NetworkError/network_error_screen.dart';
@@ -74,6 +77,7 @@ import 'package:customer_e_commerce/features/user/presentation/pages/Home/home_s
 import 'package:customer_e_commerce/features/user/presentation/pages/Login/login_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/Splash/splash_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/SuccesfulLogin/successful_login_screen.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/Wishlist/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -139,6 +143,30 @@ class AppRouter {
       GoRoute(
         path: MyRoutes.homeRoute,
         builder: (context, state) => HomeScreen(),
+      ),
+
+      GoRoute(
+        path: MyRoutes.productDetailRoute,
+        builder: (context, state) {
+          final data = state.extra as ProductDetailData;
+          return ProductDetailScreen(
+            shopId: data.shopId,
+            ownerId: data.ownerId,
+            product: data.product,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: MyRoutes.cartRoute,
+        builder: (context, state) => CartScreen(),
+      ),
+
+      GoRoute(
+        path: MyRoutes.wishlistRoute,
+        builder: (context, state) {
+          return WishlistScreen();
+        },
       ),
       GoRoute(
         path: MyRoutes.profilesetupRoute,

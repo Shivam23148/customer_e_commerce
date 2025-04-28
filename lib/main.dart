@@ -8,6 +8,7 @@ import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork
 import 'package:customer_e_commerce/features/user/presentation/bloc/ProfileSetup/profile_setup_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Register/register_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Wishlist/wishlist_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/NetworkError/network_error_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/ProfileSetup/dummy_profile_setup_screen.dart';
@@ -25,7 +26,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  setUpLocator();
+  await setUpLocator();
   runApp(MyApp());
 }
 
@@ -52,6 +53,9 @@ class _MyAppState extends State<MyApp> {
                 .currentUser)), // Initialize AuthBloc
         ),
         BlocProvider(create: (context) => serviceLocator<CartBloc>()),
+        BlocProvider(
+            create: (context) =>
+                serviceLocator<WishlistBloc>()..add(LoadWishlist())),
       ],
       child: BlocBuilder<ConnectivityBloc, ConnectivityState>(
         builder: (context, state) {

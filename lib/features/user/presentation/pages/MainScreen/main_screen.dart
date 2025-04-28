@@ -1,9 +1,14 @@
 import 'package:customer_e_commerce/core/theme/app_colors.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Cart/cart_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Wishlist/wishlist_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/Cart/cart_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/Home/home_screen.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/Wishlist/wishlist_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/widgets/address_selection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:badges/badges.dart' as badges;
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -42,6 +47,7 @@ class _MainScreenState extends State<MainScreen> {
         onAddressSelected: (address) {
           context.read<ShopBloc>().add(SelectAddressEvent(address));
           context.read<ShopBloc>().add(CalculateNearestShopEvent(address));
+          context.read<CartBloc>().add(LoadCart());
           Navigator.pop(context);
         },
       ),
@@ -60,7 +66,6 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<ShopBloc, ShopState>(
       listener: (context, state) {
-        print("Shop Bloc Listener state is ${state.userAddresses}");
         if (state.userAddresses.isNotEmpty && !_popupShown) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showAddressDialog(context);
@@ -106,11 +111,54 @@ class _MainScreenState extends State<MainScreen> {
                           label: 'Home',
                         ),
                         BottomNavigationBarItem(
-                          icon: Icon(Icons.favorite_border_outlined),
+                          icon: BlocBuilder<WishlistBloc, WishlistState>(
+                            builder: (context, state) {
+                              return state.wishlistItems.length > 0
+                                  ? badges.Badge(
+                                      badgeAnimation:
+                                          badges.BadgeAnimation.slide(
+                                        animationDuration:
+                                            Duration(milliseconds: 1500),
+                                      ),
+                                      child:
+                                          Icon(Icons.favorite_border_outlined),
+                                      position: badges.BadgePosition.topEnd(
+                                          top: -12, end: -12),
+                                      badgeContent: Text(
+                                        state.wishlistItems.length.toString(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  : Icon(Icons.favorite_border_outlined);
+                            },
+                          ),
                           label: 'Wishlist',
                         ),
                         BottomNavigationBarItem(
-                          icon: Icon(Icons.favorite_border_outlined),
+                          icon: BlocBuilder<CartBloc, CartState>(
+                            builder: (context, state) {
+                              return state.cartItems.length > 0
+                                  ? badges.Badge(
+                                      badgeAnimation:
+                                          badges.BadgeAnimation.slide(
+                                        animationDuration:
+                                            Duration(milliseconds: 1500),
+                                      ),
+                                      child: Icon(Icons.shopping_cart_outlined),
+                                      position: badges.BadgePosition.topEnd(
+                                          top: -12, end: -12),
+                                      badgeContent: Text(
+                                        state.cartItems.length.toString(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  : Icon(Icons.shopping_cart_outlined);
+                            },
+                          ),
                           label: 'Cart',
                         ),
                         BottomNavigationBarItem(
@@ -130,8 +178,8 @@ class _MainScreenState extends State<MainScreen> {
             },
             children: [
               HomeScreen(),
-              OtherScreen1(),
-              OtherScreen2(),
+              WishlistScreen(),
+              CartScreen(),
               OtherScreen3()
             ],
           ),
@@ -148,28 +196,6 @@ class OtherScreen3 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text('Other Screen 3'),
-    );
-  }
-}
-
-class OtherScreen2 extends StatelessWidget {
-  const OtherScreen2({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Other Screen 2'),
-    );
-  }
-}
-
-class OtherScreen1 extends StatelessWidget {
-  const OtherScreen1({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Other Screen 1'),
     );
   }
 }

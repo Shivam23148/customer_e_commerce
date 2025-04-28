@@ -50,6 +50,7 @@ dependencies:
   geolocator: ^13.0.2
   location: ^7.0.1
   shared_preferences: ^2.3.3
+  badges: ^3.1.2
 
 dev_dependencies:
   flutter_test:

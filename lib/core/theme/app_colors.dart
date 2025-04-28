@@ -7,4 +7,5 @@ class AppColors {
   static const Color textPrimary = Colors.black;
   static const Color textSecondary = Color(0XFFA09CAB);
   static const Color successColor = Colors.green;
+  static const Color borderColor = Color(0XFFF2F3F3);
 }

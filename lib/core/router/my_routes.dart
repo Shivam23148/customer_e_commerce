@@ -13,6 +13,12 @@ class MyRoutes {
 
   //home
   static const String homeRoute = "/home";
+  //Product detail
+  static const String productDetailRoute = "/productDetail";
+  //Cart
+  static const String cartRoute = "/cart";
+  //Wishlist
+  static const String wishlistRoute = "/wishlist";
 
   //Main
   static const String mainScreenRoute = "/mainScreen";

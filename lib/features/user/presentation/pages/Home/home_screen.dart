@@ -2,7 +2,9 @@ import 'package:customer_e_commerce/core/di/service_locator.dart';
 import 'package:customer_e_commerce/core/router/my_routes.dart';
 import 'package:customer_e_commerce/core/theme/app_colors.dart';
 import 'package:customer_e_commerce/core/utils/assets_manager.dart';
+import 'package:customer_e_commerce/core/utils/toast_util.dart';
 import 'package:customer_e_commerce/features/user/data/models/cart_model.dart';
+import 'package:customer_e_commerce/features/user/data/models/product_detail_data.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Cart/cart_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
@@ -64,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
         body: RefreshIndicator(
+          color: AppColors.primary,
           onRefresh: () async {
             context.read<ShopBloc>().add(RefereshShopDataEvent());
           },
@@ -111,146 +114,205 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                   itemCount: state.shopWithProducts?.products.length,
                   itemBuilder: (context, index) {
-                    final inventoryitem = state
-                        .shopWithProducts?.inventory.entries
-                        .elementAt(index);
+                    final ownerId = state.shopWithProducts?.shop.ownerId;
                     final productitem = state.shopWithProducts?.products.entries
                         .elementAt(index);
+                    final inventoryitem =
+                        state.shopWithProducts!.inventory.entries.firstWhere(
+                      (entry) => entry.key == productitem?.key,
+                      orElse: () => MapEntry('', 0),
+                    );
                     final shopId = state.shopWithProducts?.shop.shopId;
 
-                    return Card(
-                      elevation: 2,
-                      color: AppColors.background,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 4),
-                          Container(
-                            height: getRelativeHeight(0.13),
-                            child: Image.network(
-                              productitem!.value.productimageUrl,
-                              fit: BoxFit.scaleDown,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  AssetsManager.chipsImage,
+                    return GestureDetector(
+                      onTap: () {
+                        print("Product: ${productitem.value.toJson()}");
+                        GoRouter.of(context).push(MyRoutes.productDetailRoute,
+                            extra: ProductDetailData(
+                              shopId!,
+                              ownerId!,
+                              CartProductD(
+                                productId: productitem.value.productId,
+                                productName: productitem.value.productName,
+                                productDescription:
+                                    productitem.value.productDescription,
+                                productImageUrl:
+                                    productitem.value.productimageUrl,
+                                productPrice: productitem.value.productPrice,
+                              ),
+                            ));
+                      },
+                      child: Card(
+                        elevation: 2,
+                        color: AppColors.background,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 4),
+                            Hero(
+                              tag: productitem?.value.productId ?? "",
+                              transitionOnUserGestures: true,
+                              child: Container(
+                                height: getRelativeHeight(0.13),
+                                child: Image.network(
+                                  productitem!.value.productimageUrl.isNotEmpty
+                                      ? productitem.value.productimageUrl
+                                      : 'https://demofree.sirv.com/nope-not-here.jpg',
                                   fit: BoxFit.scaleDown,
-                                );
-                              },
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            productitem.value.productName,
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          SizedBox(height: 7),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              "₹ ${productitem.value.productPrice.toString()}",
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      AssetsManager.chipsImage,
+                                      fit: BoxFit.scaleDown,
+                                    );
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 7),
-                          inventoryitem?.value == 0
-                              ? Text(
-                                  "Out of Stock",
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                )
-                              : BlocBuilder<CartBloc, CartState>(
-                                  builder: (context, state) {
-                                    final currentItem =
-                                        state.cartItems.firstWhere(
-                                      (item) {
-                                        print("Product ID: ${item.productId}");
-                                        return item.productId ==
-                                            productitem.value.productId;
-                                      },
-                                      orElse: () => CartItem.empty(),
-                                    );
-                                    if (currentItem.quantity == 0) {
-                                      return ElevatedButton(
-                                        onPressed: () {
-                                          context
-                                              .read<CartBloc>()
-                                              .add(AddToCart(
-                                                CartItem(
-                                                  productId: productitem
-                                                      .value.productId,
-                                                  shopId: shopId,
-                                                  product: productitem.value,
-                                                  quantity: 1,
-                                                ),
-                                              ));
+                            SizedBox(height: 10),
+                            Text(
+                              productitem.value.productName,
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            SizedBox(height: 7),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                "₹ ${productitem.value.productPrice.toString()}",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 7),
+                            inventoryitem.value == 0
+                                ? Text(
+                                    "Out of Stock",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                : BlocConsumer<CartBloc, CartState>(
+                                    listener: (context, state) {
+                                      if (state.error.isNotEmpty) {
+                                        ToastUtil.showToast(
+                                            state.error, AppColors.primary);
+                                      }
+                                    },
+                                    builder: (context, state) {
+                                      final currentItem =
+                                          state.cartItems.firstWhere(
+                                        (item) {
+                                          return item
+                                                  .productDetails?.productId ==
+                                              productitem.value.productId;
                                         },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColors.primary,
-                                        ),
-                                        child: Text('Add to Cart'),
+                                        orElse: () => CartItem.empty(),
                                       );
-                                    }
-                                    if (state.isLoading == true) {
-                                      return SizedBox(
-                                        height: 20,
-                                        width: 10,
-                                        child: CircularProgressIndicator(
-                                          color: AppColors.primary,
-                                        ),
-                                      );
-                                    } else {
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              context.read<CartBloc>().add(
-                                                    UpdateCartItemQuantity(
-                                                        productitem
-                                                            .value.productId,
-                                                        currentItem.quantity! -
-                                                            1),
-                                                  );
-                                            },
-                                            icon: Icon(
-                                              Icons.remove,
-                                              color: AppColors.primary,
-                                            ),
+                                      final isItemLoading = state.itemLoading[
+                                              productitem.value.productId] ??
+                                          false;
+                                      if (currentItem.quantity == 0) {
+                                        return ElevatedButton(
+                                          onPressed: () {
+                                            context
+                                                .read<CartBloc>()
+                                                .add(AddToCart(
+                                                  CartItem(
+                                                      shopId: shopId,
+                                                      quantity: 1,
+                                                      ownerId: ownerId,
+                                                      productDetails: CartProductD(
+                                                          productId: productitem
+                                                              .value.productId,
+                                                          productName:
+                                                              productitem.value
+                                                                  .productName,
+                                                          productDescription:
+                                                              productitem.value
+                                                                  .productDescription,
+                                                          productImageUrl:
+                                                              productitem.value
+                                                                  .productimageUrl,
+                                                          productPrice:
+                                                              productitem.value
+                                                                  .productPrice)),
+                                                ));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColors.primary,
                                           ),
-                                          Text(
-                                            '${currentItem.quantity}',
+                                          child: Text(
+                                            'Add to Cart',
                                             style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600),
+                                                color: AppColors.background),
                                           ),
-                                          IconButton(
-                                            onPressed: () {
-                                              context.read<CartBloc>().add(
-                                                    UpdateCartItemQuantity(
-                                                        productitem
-                                                            .value.productId,
-                                                        currentItem.quantity! +
-                                                            1),
-                                                  );
-                                            },
-                                            icon: Icon(
-                                              Icons.add,
-                                              color: AppColors.primary,
+                                        );
+                                      } else {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                if (currentItem.quantity == 1) {
+                                                  context.read<CartBloc>().add(
+                                                        RemoveFromCart(
+                                                            productitem.value
+                                                                .productId),
+                                                      );
+                                                } else {
+                                                  context.read<CartBloc>().add(
+                                                        UpdateCartItemQuantity(
+                                                            productitem.value
+                                                                .productId,
+                                                            currentItem
+                                                                    .quantity! -
+                                                                1),
+                                                      );
+                                                }
+                                              },
+                                              icon: Icon(
+                                                Icons.remove,
+                                                color: AppColors.primary,
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  },
-                                )
-                        ],
+                                            isItemLoading
+                                                ? const CircularProgressIndicator(
+                                                    color: AppColors.primary,
+                                                  )
+                                                : Text(
+                                                    '${currentItem.quantity}',
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                            IconButton(
+                                              onPressed: () {
+                                                context.read<CartBloc>().add(
+                                                      UpdateCartItemQuantity(
+                                                          productitem
+                                                              .value.productId,
+                                                          currentItem
+                                                                  .quantity! +
+                                                              1),
+                                                    );
+                                              },
+                                              icon: Icon(
+                                                Icons.add,
+                                                color: AppColors.primary,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                    },
+                                  )
+                          ],
+                        ),
                       ),
                     );
                   });

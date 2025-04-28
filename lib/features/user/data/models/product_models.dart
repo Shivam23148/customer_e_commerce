@@ -52,3 +52,60 @@ class Product {
     );
   }
 }
+
+// This class is used to represent the product in the cart
+
+class CartProductD {
+  final String productName;
+  final String productDescription;
+  final double productPrice;
+  final String productImageUrl;
+
+  CartProductD({
+    required this.productName,
+    required this.productDescription,
+    required this.productPrice,
+    required this.productImageUrl,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productName': productName,
+      'productDescription': productDescription,
+      'productPrice': productPrice,
+      'productImageUrl': productImageUrl,
+    };
+  }
+
+  factory CartProductD.fromJson(Map<String, dynamic> json) {
+    return CartProductD(
+      productName: json['productName'],
+      productDescription: json['productDescription'],
+      productPrice: (json['productPrice'] ?? 0).toDouble(),
+      productImageUrl: json['productImageUrl'],
+    );
+  }
+
+  CartProductD copyWith({
+    String? productName,
+    String? productDescription,
+    double? productPrice,
+    String? productImageUrl,
+  }) {
+    return CartProductD(
+      productName: productName ?? this.productName,
+      productDescription: productDescription ?? this.productDescription,
+      productPrice: productPrice ?? this.productPrice,
+      productImageUrl: productImageUrl ?? this.productImageUrl,
+    );
+  }
+
+  static CartProductD empty() {
+    return CartProductD(
+      productName: '',
+      productDescription: '',
+      productPrice: 0.0,
+      productImageUrl: '',
+    );
+  }
+}

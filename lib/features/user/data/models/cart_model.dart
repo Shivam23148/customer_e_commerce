@@ -1,63 +1,121 @@
 import 'package:customer_e_commerce/features/user/data/models/product_models.dart';
 
 class CartItem {
-  final String? productId;
   final String? shopId;
-  final String? productName;
-  final Product? product;
+  final String? ownerId;
   final int? quantity;
+  final CartProductD? productDetails;
 
   CartItem({
-    this.productId,
     this.shopId,
-    this.productName,
-    this.product,
+    this.ownerId,
     this.quantity,
+    this.productDetails,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'productId': productId,
       'shopId': shopId,
-      'productName': productName,
-      'product': product?.toJson(),
+      'ownerId': ownerId,
       'quantity': quantity,
+      'productDetails': productDetails?.toJson(),
     };
   }
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
-      productId: json['productId'],
       shopId: json['shopId'],
-      productName: json['productName'],
-      product:
-          json['product'] != null ? Product.fromJson(json['product']) : null,
+      ownerId: json['ownerId'],
       quantity: json['quantity'],
+      productDetails: json['productDetails'] != null
+          ? CartProductD.fromJson(json['productDetails'])
+          : null,
     );
   }
-
   CartItem copyWith({
-    String? productId,
     String? shopId,
+    String? ownerId,
     String? productName,
-    Product? product,
     int? quantity,
   }) {
     return CartItem(
-      productId: productId ?? this.productId,
       shopId: shopId ?? this.shopId,
-      productName: productName ?? this.productName,
-      product: product ?? this.product,
       quantity: quantity ?? this.quantity,
+      productDetails: productDetails?.copyWith(
+        productName: productName ?? productDetails?.productName,
+      ),
     );
   }
 
   static CartItem empty() {
     return CartItem(
-      productId: '',
-      shopId: '',
-      product: null,
+      shopId: null,
+      ownerId: null,
       quantity: 0,
+      productDetails: CartProductD.empty(),
+    );
+  }
+}
+
+/// CartProductD class to represent product details in the cart
+class CartProductD {
+  final String productId; // 🔥 New field
+  final String productName;
+  final String productDescription;
+  final double productPrice;
+  final String productImageUrl;
+
+  CartProductD({
+    required this.productId,
+    required this.productName,
+    required this.productDescription,
+    required this.productPrice,
+    required this.productImageUrl,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productId': productId,
+      'productName': productName,
+      'productDescription': productDescription,
+      'productPrice': productPrice,
+      'productImageUrl': productImageUrl,
+    };
+  }
+
+  factory CartProductD.fromJson(Map<String, dynamic> json) {
+    return CartProductD(
+      productId: json['productId'],
+      productName: json['productName'],
+      productDescription: json['productDescription'],
+      productPrice: (json['productPrice'] ?? 0).toDouble(),
+      productImageUrl: json['productImageUrl'],
+    );
+  }
+
+  CartProductD copyWith({
+    String? productId,
+    String? productName,
+    String? productDescription,
+    double? productPrice,
+    String? productImageUrl,
+  }) {
+    return CartProductD(
+      productId: productId ?? this.productId,
+      productName: productName ?? this.productName,
+      productDescription: productDescription ?? this.productDescription,
+      productPrice: productPrice ?? this.productPrice,
+      productImageUrl: productImageUrl ?? this.productImageUrl,
+    );
+  }
+
+  static CartProductD empty() {
+    return CartProductD(
+      productId: '',
+      productName: '',
+      productDescription: '',
+      productPrice: 0.0,
+      productImageUrl: '',
     );
   }
 }

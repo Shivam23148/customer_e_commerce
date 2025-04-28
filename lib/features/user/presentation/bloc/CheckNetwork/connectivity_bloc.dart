@@ -7,7 +7,6 @@ part 'connectivity_state.dart';
 
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   final Connectivity _connectivity;
-  String? lastvisitedRoute;
   ConnectivityBloc(this._connectivity) : super(ConnectivityInitial()) {
     on<CheckConnectivityEvent>((event, emit) async {
       final result = await _connectivity.checkConnectivity();

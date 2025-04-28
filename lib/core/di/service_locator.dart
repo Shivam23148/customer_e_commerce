@@ -6,6 +6,7 @@ import 'package:customer_e_commerce/features/user/data/repositories/auth_reposit
 import 'package:customer_e_commerce/features/user/data/repositories/cart_repository.dart';
 import 'package:customer_e_commerce/features/user/data/repositories/profile_repository_impl.dart';
 import 'package:customer_e_commerce/features/user/data/repositories/shop_repositry_impl.dart';
+import 'package:customer_e_commerce/features/user/data/repositories/wishlist_repository.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/profile_repository.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Auth/auth_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork
 import 'package:customer_e_commerce/features/user/presentation/bloc/ProfileSetup/profile_setup_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Register/register_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Wishlist/wishlist_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
@@ -25,6 +27,11 @@ Future<void> setUpLocator() async {
   //Firebase Auth
   serviceLocator
       .registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+
+  //Connecitivity
+  final connectivity = Connectivity();
+  serviceLocator.registerLazySingleton<Connectivity>(() => connectivity);
+
   //Firebase Firestore
   serviceLocator.registerLazySingleton<FirebaseFirestore>(
       () => FirebaseFirestore.instance);
@@ -48,12 +55,6 @@ Future<void> setUpLocator() async {
       () => serviceLocator<FirebaseFirestore>().collection('products'),
       instanceName: 'products');
 
-  //Connectivity
-  final connectivity = Connectivity();
-  serviceLocator.registerLazySingleton<Connectivity>(() => connectivity);
-  serviceLocator.registerLazySingleton(
-      () => ConnectivityBloc(serviceLocator<Connectivity>()));
-
   //Repository
   //Auth Repository
   serviceLocator
@@ -64,11 +65,15 @@ Future<void> setUpLocator() async {
           firestore: serviceLocator<FirebaseFirestore>(),
           firebaseAuth: serviceLocator<FirebaseAuth>()));
   //Shop Repository
-  serviceLocator.registerLazySingleton(() => ShopRepository());
+  serviceLocator.registerLazySingleton<ShopRepository>(() => ShopRepository());
   //Address Repository
-  serviceLocator.registerLazySingleton(() => AddressRepositoryImpl());
+  serviceLocator.registerLazySingleton<AddressRepositoryImpl>(
+      () => AddressRepositoryImpl());
   //Cart Repository
-  serviceLocator.registerLazySingleton(() => CartRepository());
+  serviceLocator.registerLazySingleton<CartRepository>(() => CartRepository());
+  //Wishlist Repository
+  serviceLocator
+      .registerLazySingleton<WishlistRepository>(() => WishlistRepository());
 
   //Service
   //Geolocator Service
@@ -76,6 +81,9 @@ Future<void> setUpLocator() async {
       .registerLazySingleton<GeolocatorService>(() => GeolocatorService());
 
   //BLOC
+  //Connectivity Bloc
+  serviceLocator.registerLazySingleton(
+      () => ConnectivityBloc(serviceLocator<Connectivity>()));
   //Auth
   serviceLocator.registerLazySingleton(() => AuthBloc());
   //Login
@@ -89,5 +97,7 @@ Future<void> setUpLocator() async {
   //Shop
   serviceLocator.registerLazySingleton(() => ShopBloc());
   //Cart
-  serviceLocator.registerLazySingleton(() => CartBloc());
+  serviceLocator.registerLazySingleton<CartBloc>(() => CartBloc());
+  //Wishlist
+  serviceLocator.registerLazySingleton<WishlistBloc>(() => WishlistBloc());
 }
