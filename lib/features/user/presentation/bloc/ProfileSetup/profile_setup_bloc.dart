@@ -71,6 +71,7 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
         final addressWithLocation = event.address.copyWith(
             location: GeoPoint(location.latitude, location.longitude));
         await profileRepository.saveAddress(addressWithLocation);
+
         /* 
         if (event.isManualEntry) {
           final location =

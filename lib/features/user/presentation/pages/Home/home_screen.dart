@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen>
           },
           child: BlocBuilder<ShopBloc, ShopState>(
             builder: (context, state) {
-              print("Home Screen build called with state: ${state.distance}");
+              print("State of loading : ${state.isLoading}");
               if (state.isLoading) {
                 return Center(
                   child: CircularProgressIndicator(
@@ -214,66 +214,90 @@ class _HomeScreenState extends State<HomeScreen>
                                       final isItemLoading = state.itemLoading[
                                               productitem.value.productId] ??
                                           false;
+
                                       if (currentItem.quantity == 0) {
-                                        return ElevatedButton(
-                                          onPressed: () {
-                                            context
-                                                .read<CartBloc>()
-                                                .add(AddToCart(
-                                                  CartItem(
-                                                      shopId: shopId,
-                                                      quantity: 1,
-                                                      ownerId: ownerId,
-                                                      productDetails: CartProductD(
-                                                          productId: productitem
-                                                              .value.productId,
-                                                          productName:
-                                                              productitem.value
-                                                                  .productName,
-                                                          productDescription:
-                                                              productitem.value
-                                                                  .productDescription,
-                                                          productImageUrl:
-                                                              productitem.value
-                                                                  .productimageUrl,
-                                                          productPrice:
-                                                              productitem.value
-                                                                  .productPrice)),
-                                                ));
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppColors.primary,
-                                          ),
-                                          child: Text(
-                                            'Add to Cart',
-                                            style: TextStyle(
-                                                color: AppColors.background),
-                                          ),
-                                        );
+                                        return isItemLoading
+                                            ? CircularProgressIndicator(
+                                                color: AppColors.primary,
+                                              )
+                                            : ElevatedButton(
+                                                onPressed: state.isLoading
+                                                    ? null
+                                                    : () {
+                                                        context
+                                                            .read<CartBloc>()
+                                                            .add(AddToCart(
+                                                              CartItem(
+                                                                  shopId:
+                                                                      shopId,
+                                                                  quantity: 1,
+                                                                  ownerId:
+                                                                      ownerId,
+                                                                  productDetails: CartProductD(
+                                                                      productId: productitem
+                                                                          .value
+                                                                          .productId,
+                                                                      productName: productitem
+                                                                          .value
+                                                                          .productName,
+                                                                      productDescription: productitem
+                                                                          .value
+                                                                          .productDescription,
+                                                                      productImageUrl: productitem
+                                                                          .value
+                                                                          .productimageUrl,
+                                                                      productPrice: productitem
+                                                                          .value
+                                                                          .productPrice)),
+                                                            ));
+                                                      },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: state
+                                                          .isLoading
+                                                      ? AppColors.textSecondary
+                                                      : AppColors.primary,
+                                                ),
+                                                child: Text(
+                                                  'Add to Cart',
+                                                  style: TextStyle(
+                                                      color:
+                                                          AppColors.background),
+                                                ),
+                                              );
                                       } else {
                                         return Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
                                             IconButton(
-                                              onPressed: () {
-                                                if (currentItem.quantity == 1) {
-                                                  context.read<CartBloc>().add(
-                                                        RemoveFromCart(
-                                                            productitem.value
-                                                                .productId),
-                                                      );
-                                                } else {
-                                                  context.read<CartBloc>().add(
-                                                        UpdateCartItemQuantity(
-                                                            productitem.value
-                                                                .productId,
-                                                            currentItem
-                                                                    .quantity! -
-                                                                1),
-                                                      );
-                                                }
-                                              },
+                                              onPressed: state.isLoading
+                                                  ? null
+                                                  : () {
+                                                      if (currentItem
+                                                              .quantity ==
+                                                          1) {
+                                                        context
+                                                            .read<CartBloc>()
+                                                            .add(
+                                                              RemoveFromCart(
+                                                                  productitem
+                                                                      .value
+                                                                      .productId),
+                                                            );
+                                                      } else {
+                                                        context
+                                                            .read<CartBloc>()
+                                                            .add(
+                                                              UpdateCartItemQuantity(
+                                                                  productitem
+                                                                      .value
+                                                                      .productId,
+                                                                  currentItem
+                                                                          .quantity! -
+                                                                      1),
+                                                            );
+                                                      }
+                                                    },
                                               icon: Icon(
                                                 Icons.remove,
                                                 color: AppColors.primary,
@@ -291,16 +315,21 @@ class _HomeScreenState extends State<HomeScreen>
                                                             FontWeight.w600),
                                                   ),
                                             IconButton(
-                                              onPressed: () {
-                                                context.read<CartBloc>().add(
-                                                      UpdateCartItemQuantity(
-                                                          productitem
-                                                              .value.productId,
-                                                          currentItem
-                                                                  .quantity! +
-                                                              1),
-                                                    );
-                                              },
+                                              onPressed: state.isLoading
+                                                  ? null
+                                                  : () {
+                                                      context
+                                                          .read<CartBloc>()
+                                                          .add(
+                                                            UpdateCartItemQuantity(
+                                                                productitem
+                                                                    .value
+                                                                    .productId,
+                                                                currentItem
+                                                                        .quantity! +
+                                                                    1),
+                                                          );
+                                                    },
                                               icon: Icon(
                                                 Icons.add,
                                                 color: AppColors.primary,

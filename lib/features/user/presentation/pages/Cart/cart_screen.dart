@@ -1,9 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customer_e_commerce/core/di/service_locator.dart';
+import 'package:customer_e_commerce/core/router/my_routes.dart';
 import 'package:customer_e_commerce/core/theme/app_colors.dart';
+import 'package:customer_e_commerce/core/utils/global_variable.dart';
+import 'package:customer_e_commerce/core/utils/toast_util.dart';
+import 'package:customer_e_commerce/features/user/data/models/order_model.dart';
+import 'package:customer_e_commerce/features/user/data/repositories/order_repository.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Cart/cart_bloc.dart';
 import 'package:customer_e_commerce/size_config.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -13,6 +22,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  bool isOrderPlaced = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -172,8 +182,68 @@ class _CartScreenState extends State<CartScreen> {
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          onPressed: () {},
-                          child: const Text("Checkout"),
+                          onPressed: isOrderPlaced
+                              ? null // Disable button while processing
+                              : () async {
+                                  setState(() {
+                                    isOrderPlaced = true;
+                                  });
+
+                                  try {
+                                    final OrderRepository orderRepository =
+                                        OrderRepository();
+                                    final userId =
+                                        serviceLocator<FirebaseAuth>()
+                                            .currentUser
+                                            ?.uid;
+                                    final String orderId =
+                                        DateTime.now().toString();
+                                    final order = UserOrder(
+                                      orderId: orderId,
+                                      userId: userId!,
+                                      shopId: state.cartItems.first.shopId!,
+                                      cartItems: state.cartItems,
+                                      totalAmount: total,
+                                      createdAt: Timestamp.now(),
+                                      updatedAt: Timestamp.now(),
+                                      deliveryAddress: GlobalVariable
+                                          .selectedAddressUser
+                                          .toString(),
+                                    );
+
+                                    await orderRepository.createOrder(order);
+                                    ToastUtil.showToast("Successfully ordered",
+                                        AppColors.successColor);
+
+                                    if (!mounted) return;
+                                    context
+                                        .read<CartBloc>()
+                                        .add(ClearCartEvent());
+                                    GoRouter.of(context).push(
+                                        MyRoutes.orderTrackingRoute,
+                                        extra: orderId);
+                                  } catch (error) {
+                                    print(error.toString());
+                                    ToastUtil.showToast("Error placing order",
+                                        AppColors.primary);
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() {
+                                        isOrderPlaced = false;
+                                      });
+                                    }
+                                  }
+                                },
+                          child: isOrderPlaced
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text("Checkout"),
                         ),
                       ),
                     ],

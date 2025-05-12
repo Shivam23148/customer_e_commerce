@@ -1,13 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer_e_commerce/core/di/service_locator.dart';
 import 'package:customer_e_commerce/core/theme/app_colors.dart';
 import 'package:customer_e_commerce/core/utils/toast_util.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuth _firebaseAuth = serviceLocator<FirebaseAuth>();
+  final FirebaseMessaging _firebaseMessaging =
+      serviceLocator<FirebaseMessaging>();
+  final FirebaseFirestore firestore = serviceLocator<FirebaseFirestore>();
 
   void _showToast(String message) {
     Fluttertoast.showToast(
@@ -24,8 +29,9 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-
-      return result.user!;
+      final user = result.user;
+      await _saveDeviceToken(user!);
+      return user;
     } on FirebaseAuthException catch (e) {
       ToastUtil.showToast(
           e.message ?? "Login failed. Please try again.", AppColors.primary);
@@ -38,7 +44,9 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User> register(String email, String password) async {
     final user = _firebaseAuth.currentUser;
-    return user!;
+    await _saveDeviceToken(user!);
+
+    return user;
   }
 
   /* @override
@@ -138,6 +146,20 @@ class AuthRepositoryImpl implements AuthRepository {
           e.message ?? "Can't send verification", AppColors.primary);
     } catch (e) {
       throw Exception("Failed to send verification email.");
+    }
+  }
+
+  Future<void> _saveDeviceToken(User user) async {
+    try {
+      final fcmToken = await _firebaseMessaging.getToken();
+      if (fcmToken != null) {
+        await firestore.collection('users').doc(user.uid).update({
+          'fcmToken': fcmToken,
+          'tokenUpdatedAt': FieldValue.serverTimestamp()
+        });
+      }
+    } catch (e) {
+      print("Failed to save FCM token : $e");
     }
   }
 }

@@ -13,6 +13,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     // Add to Cart logic
     on<AddToCart>((event, emit) async {
       emit(state.copyWith(
+          isLoading: true,
           itemLoading: {event.cartItem.productDetails!.productId: true},
           error: ""));
 
@@ -45,11 +46,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
         await cartRepository.saveCart(updatedCartItems);
         emit(state.copyWith(
+            isLoading: false,
             cartItems: updatedCartItems,
             error: "",
             itemLoading: {event.cartItem.productDetails!.productId: false}));
       } catch (e) {
         emit(state.copyWith(
+          isLoading: true,
           itemLoading: {event.cartItem.productDetails!.productId: false},
           error: 'Failed to add to cart',
         ));
@@ -59,7 +62,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     // Update cart item quantity logic
     on<UpdateCartItemQuantity>((event, emit) async {
-      emit(state.copyWith(itemLoading: {event.productId: true}, error: ""));
+      emit(state.copyWith(
+          isLoading: true, itemLoading: {event.productId: true}, error: ""));
       try {
         final updatedCartItems = List<CartItem>.from(state.cartItems);
 
@@ -89,6 +93,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         }
 
         emit(state.copyWith(
+            isLoading: false,
             cartItems: updatedCartItems,
             error: "",
             itemLoading: {event.productId: false}));
@@ -103,7 +108,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     // Remove item from cart logic
     on<RemoveFromCart>((event, emit) async {
-      emit(state.copyWith(itemLoading: {event.productId: true}, error: ""));
+      emit(state.copyWith(
+          isLoading: true, itemLoading: {event.productId: true}, error: ""));
 
       try {
         final updatedCartItems = List<CartItem>.from(state.cartItems);
@@ -124,16 +130,36 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
         await cartRepository.saveCart(updatedCartItems);
         emit(state.copyWith(
+            isLoading: false,
             cartItems: updatedCartItems,
             error: "",
             itemLoading: {event.productId: false}));
       } catch (e) {
         emit(state.copyWith(
+          isLoading: true,
           itemLoading: {event.productId: false},
           error: 'Failed to remove item',
         ));
 
         print('Failed to remove item: ${e.toString()}');
+      }
+    });
+
+    // Clear cart logic
+    on<ClearCartEvent>((event, emit) {
+      try {
+        cartRepository.clearCart();
+        emit(
+          state.copyWith(
+            cartItems: [],
+            error: "",
+          ),
+        );
+      } catch (e) {
+        emit(state.copyWith(
+          error: 'Failed to clear cart',
+        ));
+        print('Failed to clear cart: ${e.toString()}');
       }
     });
 

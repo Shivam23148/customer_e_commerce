@@ -9,4 +9,5 @@ abstract class AuthRepository {
   Future<void> sendEmailVerificaiton(String email);
   Future<bool> isEmailVerified();
   Future<void> resendVerificationEmail();
+  Future<void> _saveDeviceToken(User user);
 }

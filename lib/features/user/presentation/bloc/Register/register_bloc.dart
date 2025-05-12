@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:customer_e_commerce/core/di/service_locator.dart';
+import 'package:customer_e_commerce/core/services/notification_service.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 part 'register_event.dart';
 part 'register_state.dart';
@@ -8,6 +10,8 @@ part 'register_state.dart';
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   Timer? _timer;
   final AuthRepository authRepository;
+  final NotificationService notificationService =
+      serviceLocator<NotificationService>();
   RegisterBloc(this.authRepository) : super(RegisterInitial()) {
     on<SendVerificationEmailEvent>((event, emit) {
       emit(RegisterLoading());
@@ -39,6 +43,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         final user = await authRepository.getCurrentUser();
         if (user != null && user.emailVerified) {
           await user.updatePassword(event.password);
+          notificationService.showNotification(
+            title: 'Registration Successful',
+            body:
+                'Welcome to the app, ${user.displayName ?? 'New User'}! We are excited to have you.',
+          );
+
           emit(RegistrationCompletedState());
         } else {
           emit(RegistrationErrorState("Email is not verified"));

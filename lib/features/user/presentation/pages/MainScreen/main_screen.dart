@@ -1,4 +1,5 @@
 import 'package:customer_e_commerce/core/theme/app_colors.dart';
+import 'package:customer_e_commerce/core/utils/global_variable.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Cart/cart_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Wishlist/wishlist_bloc.dart';
@@ -46,6 +47,7 @@ class _MainScreenState extends State<MainScreen> {
         addresses: addresses,
         onAddressSelected: (address) {
           context.read<ShopBloc>().add(SelectAddressEvent(address));
+          GlobalVariable.selectedAddressUser = address;
           context.read<ShopBloc>().add(CalculateNearestShopEvent(address));
           context.read<CartBloc>().add(LoadCart());
           Navigator.pop(context);

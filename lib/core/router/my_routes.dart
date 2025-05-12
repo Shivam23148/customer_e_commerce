@@ -17,6 +17,8 @@ class MyRoutes {
   static const String productDetailRoute = "/productDetail";
   //Cart
   static const String cartRoute = "/cart";
+  //OrderWaiting
+  static const String orderTrackingRoute = "/orderTracking";
   //Wishlist
   static const String wishlistRoute = "/wishlist";
 

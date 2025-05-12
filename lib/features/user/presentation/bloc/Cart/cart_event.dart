@@ -21,4 +21,6 @@ class UpdateCartItemQuantity extends CartEvent {
   UpdateCartItemQuantity(this.productId, this.newQuantity);
 }
 
+class ClearCartEvent extends CartEvent {}
+
 class LoadCart extends CartEvent {}

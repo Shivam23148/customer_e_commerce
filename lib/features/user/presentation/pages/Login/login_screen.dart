@@ -2,7 +2,7 @@ import 'package:customer_e_commerce/core/di/service_locator.dart';
 import 'package:customer_e_commerce/core/router/my_routes.dart';
 import 'package:customer_e_commerce/core/theme/app_colors.dart';
 import 'package:customer_e_commerce/core/utils/validators.dart';
-import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Login/login_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/widgets/my_elevated_button.dart';
 import 'package:customer_e_commerce/size_config.dart';
 import 'package:flutter/material.dart';

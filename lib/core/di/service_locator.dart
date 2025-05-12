@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:customer_e_commerce/core/services/geolocator_service.dart';
+import 'package:customer_e_commerce/core/services/notification_service.dart';
 import 'package:customer_e_commerce/features/user/data/repositories/address_repository_impl.dart';
 import 'package:customer_e_commerce/features/user/data/repositories/auth_repository_impl.dart';
 import 'package:customer_e_commerce/features/user/data/repositories/cart_repository.dart';
@@ -12,12 +13,15 @@ import 'package:customer_e_commerce/features/user/domain/repositories/profile_re
 import 'package:customer_e_commerce/features/user/presentation/bloc/Auth/auth_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Cart/cart_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork/connectivity_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/OrderStatus/orderstatus_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/ProfileSetup/profile_setup_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Register/register_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Wishlist/wishlist_bloc.dart';
-import 'package:customer_e_commerce/features/user/presentation/bloc/login/login_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Login/login_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +39,14 @@ Future<void> setUpLocator() async {
   //Firebase Firestore
   serviceLocator.registerLazySingleton<FirebaseFirestore>(
       () => FirebaseFirestore.instance);
+
+  //Firebase Messaging
+  serviceLocator.registerLazySingleton<FirebaseMessaging>(
+      () => FirebaseMessaging.instance);
+
+  //Flutter Local Notification
+  serviceLocator.registerLazySingleton<FlutterLocalNotificationsPlugin>(
+      () => FlutterLocalNotificationsPlugin());
 
   //Shared Preferences
   final sharedPrefernces = await SharedPreferences.getInstance();
@@ -79,6 +91,10 @@ Future<void> setUpLocator() async {
   //Geolocator Service
   serviceLocator
       .registerLazySingleton<GeolocatorService>(() => GeolocatorService());
+  //Notification Service
+  serviceLocator
+      .registerLazySingleton<NotificationService>(() => NotificationService());
+  await serviceLocator<NotificationService>().init();
 
   //BLOC
   //Connectivity Bloc
@@ -98,6 +114,9 @@ Future<void> setUpLocator() async {
   serviceLocator.registerLazySingleton(() => ShopBloc());
   //Cart
   serviceLocator.registerLazySingleton<CartBloc>(() => CartBloc());
+  //OrderWaiting
+  serviceLocator
+      .registerLazySingleton<OrderstatusBloc>(() => OrderstatusBloc());
   //Wishlist
   serviceLocator.registerLazySingleton<WishlistBloc>(() => WishlistBloc());
 }
