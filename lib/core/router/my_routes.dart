@@ -21,6 +21,13 @@ class MyRoutes {
   static const String orderTrackingRoute = "/orderTracking";
   //Wishlist
   static const String wishlistRoute = "/wishlist";
+  //Profile
+  static const String profileRoute = "/profile";
+
+  //Address
+  static const String addressRoute = "/address";
+  //Edit Address
+  static const String editAddessRoute = "/editAdress";
 
   //Main
   static const String mainScreenRoute = "/mainScreen";

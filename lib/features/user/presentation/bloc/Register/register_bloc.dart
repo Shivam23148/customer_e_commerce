@@ -13,10 +13,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final NotificationService notificationService =
       serviceLocator<NotificationService>();
   RegisterBloc(this.authRepository) : super(RegisterInitial()) {
-    on<SendVerificationEmailEvent>((event, emit) {
+    on<SendVerificationEmailEvent>((event, emit) async {
       emit(RegisterLoading());
       try {
-        authRepository.sendEmailVerificaiton(event.email);
+        await authRepository.handleEmailEntry(event.email);
         emit(EmailSentState());
         _timer = Timer.periodic(Duration(seconds: 1), (timer) {
           add(CheckEmailVerificationEvent());
@@ -34,6 +34,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           emit(EmailVerifiedState());
         }
       } catch (e) {
+        _timer?.cancel();
         rethrow;
       }
     });

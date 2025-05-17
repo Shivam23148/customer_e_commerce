@@ -2,7 +2,7 @@ part of 'profile_setup_bloc.dart';
 
 abstract class ProfileSetupEvent {}
 
-class ProfileResetEvent extends ProfileSetupEvent {}
+class ProfileSetupResetEvent extends ProfileSetupEvent {}
 
 class SaveBasicInfoEvent extends ProfileSetupEvent {
   final Profile profileData;

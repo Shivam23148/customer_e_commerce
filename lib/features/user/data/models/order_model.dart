@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customer_e_commerce/features/user/data/models/address_model.dart';
 import 'package:customer_e_commerce/features/user/data/models/cart_model.dart';
 
 class UserOrder {
@@ -11,7 +12,7 @@ class UserOrder {
   final String? orderProgress;
   final Timestamp createdAt;
   final Timestamp updatedAt;
-  final String deliveryAddress;
+  final UserAddress deliveryAddress;
 
   UserOrder({
     required this.orderId,
@@ -41,7 +42,7 @@ class UserOrder {
       orderProgress: data['orderProgress'],
       createdAt: data['createdAt'] ?? Timestamp.now(),
       updatedAt: data['updatedAt'] ?? Timestamp.now(),
-      deliveryAddress: data['deliveryAddress'],
+      deliveryAddress: UserAddress.fromFirestore(data['deliveryAddress']),
     );
   }
 
@@ -56,7 +57,7 @@ class UserOrder {
       'orderProgress': orderProgress,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
-      'deliveryAddress': deliveryAddress,
+      'deliveryAddress': deliveryAddress.toJson(),
     };
   }
 }

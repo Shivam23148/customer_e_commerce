@@ -7,7 +7,11 @@ abstract class AuthRepository {
   Future<void> logout();
   Future<User?> getCurrentUser();
   Future<void> sendEmailVerificaiton(String email);
+  Future<void> handleEmailEntry(String email);
   Future<bool> isEmailVerified();
   Future<void> resendVerificationEmail();
+  Future<void> verifyCurrentPassword(String currentPassword);
+  Future<void> updatePasswordCredential(
+      String currentPassword, String newPassword);
   Future<void> _saveDeviceToken(User user);
 }

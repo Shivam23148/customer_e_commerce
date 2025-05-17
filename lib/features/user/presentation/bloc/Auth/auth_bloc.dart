@@ -14,9 +14,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _authSubscription = firebaseAuth.authStateChanges().listen((user) {
       add(AuthUserChanged(user));
     });
-    on<AuthUserChanged>((event, emit) {
-      if (event.user != null) {
-        emit(AuthAuthenticated(event.user!));
+    on<AuthUserChanged>((event, emit) async {
+      final user = event.user;
+      if (user != null) {
+        await user.reload();
+        if (user.emailVerified) {
+          emit(AuthAuthenticated(event.user!));
+        } else {
+          await firebaseAuth.signOut();
+          emit(AuthUnauthenticated());
+        }
       } else {
         emit(AuthUnauthenticated());
       }

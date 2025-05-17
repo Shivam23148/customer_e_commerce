@@ -206,9 +206,8 @@ class _CartScreenState extends State<CartScreen> {
                                       totalAmount: total,
                                       createdAt: Timestamp.now(),
                                       updatedAt: Timestamp.now(),
-                                      deliveryAddress: GlobalVariable
-                                          .selectedAddressUser
-                                          .toString(),
+                                      deliveryAddress:
+                                          GlobalVariable.selectedAddressUser,
                                     );
 
                                     await orderRepository.createOrder(order);
@@ -223,7 +222,8 @@ class _CartScreenState extends State<CartScreen> {
                                         MyRoutes.orderTrackingRoute,
                                         extra: orderId);
                                   } catch (error) {
-                                    print(error.toString());
+                                    print(
+                                        "Error in the checkout order is : ${error.toString()}");
                                     ToastUtil.showToast("Error placing order",
                                         AppColors.primary);
                                   } finally {

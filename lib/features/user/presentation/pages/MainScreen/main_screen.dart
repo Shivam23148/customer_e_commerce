@@ -5,6 +5,7 @@ import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bl
 import 'package:customer_e_commerce/features/user/presentation/bloc/Wishlist/wishlist_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/Cart/cart_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/Home/home_screen.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/Profile/profile_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/Wishlist/wishlist_screen.dart';
 import 'package:customer_e_commerce/features/user/presentation/widgets/address_selection_dialog.dart';
 import 'package:flutter/material.dart';
@@ -182,22 +183,11 @@ class _MainScreenState extends State<MainScreen> {
               HomeScreen(),
               WishlistScreen(),
               CartScreen(),
-              OtherScreen3()
+              ProfileScreen()
             ],
           ),
         );
       },
-    );
-  }
-}
-
-class OtherScreen3 extends StatelessWidget {
-  const OtherScreen3({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Other Screen 3'),
     );
   }
 }

@@ -28,8 +28,11 @@ class UserAddress {
   });
 
   // Create User Address object from a Firestore document (map)
-  factory UserAddress.fromFirestore(Map<String, dynamic> data) {
+  factory UserAddress.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+
     return UserAddress(
+      id: doc.id,
       houseNo: data['houseNo'] as String? ?? '',
       street: data['street'] as String? ?? '',
       landmark: data['landmark'] as String? ?? '',
@@ -48,7 +51,6 @@ class UserAddress {
   // Convert User Address object to JSON Firestore
   Map<String, dynamic> toJson() {
     return {
-      'id': id ?? '',
       'houseNo': houseNo ?? '',
       'street': street ?? '',
       'landmark': landmark ?? '',

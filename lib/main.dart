@@ -12,6 +12,7 @@ import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bl
 import 'package:customer_e_commerce/features/user/presentation/bloc/Wishlist/wishlist_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Login/login_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/pages/NetworkError/network_error_screen.dart';
+import 'package:customer_e_commerce/features/user/presentation/pages/PageNotFound/page_not_found.dart';
 import 'package:customer_e_commerce/firebase_options.dart';
 import 'package:customer_e_commerce/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -69,14 +70,20 @@ class _MyAppState extends State<MyApp> {
                 return NetworkErrorScreen();
               },
             );
+          } else if (state is ConnectivityConnected) {
+            return MaterialApp.router(
+              routerConfig: AppRouter.router,
+              builder: (context, child) {
+                SizeConfig.initSize(context);
+                return child ?? SizedBox();
+              },
+              debugShowMaterialGrid: false,
+            );
           }
-          return MaterialApp.router(
-            routerConfig: AppRouter.router,
-            builder: (context, child) {
-              SizeConfig.initSize(context);
-              return child ?? SizedBox();
+          return MaterialApp(
+            builder: (context, widget) {
+              return PageNotFound();
             },
-            debugShowMaterialGrid: false,
           ); /* 
           return MaterialApp(
             builder: (context, child) {

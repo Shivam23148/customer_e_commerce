@@ -10,10 +10,12 @@ import 'package:customer_e_commerce/features/user/data/repositories/shop_reposit
 import 'package:customer_e_commerce/features/user/data/repositories/wishlist_repository.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 import 'package:customer_e_commerce/features/user/domain/repositories/profile_repository.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Address/address_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Auth/auth_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Cart/cart_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/CheckNetwork/connectivity_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/OrderStatus/orderstatus_bloc.dart';
+import 'package:customer_e_commerce/features/user/presentation/bloc/Profile/profile_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/ProfileSetup/profile_setup_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Register/register_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
@@ -119,4 +121,8 @@ Future<void> setUpLocator() async {
       .registerLazySingleton<OrderstatusBloc>(() => OrderstatusBloc());
   //Wishlist
   serviceLocator.registerLazySingleton<WishlistBloc>(() => WishlistBloc());
+  //Profile
+  serviceLocator.registerLazySingleton<ProfileBloc>(() => ProfileBloc());
+  //Address
+  serviceLocator.registerLazySingleton<AddressBloc>(() => AddressBloc());
 }

@@ -1,14 +1,11 @@
-import 'package:customer_e_commerce/core/di/service_locator.dart';
 import 'package:customer_e_commerce/core/router/my_routes.dart';
 import 'package:customer_e_commerce/core/theme/app_colors.dart';
 import 'package:customer_e_commerce/core/utils/assets_manager.dart';
 import 'package:customer_e_commerce/core/utils/toast_util.dart';
 import 'package:customer_e_commerce/features/user/data/models/cart_model.dart';
 import 'package:customer_e_commerce/features/user/data/models/product_detail_data.dart';
-import 'package:customer_e_commerce/features/user/domain/repositories/auth_repository.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Cart/cart_bloc.dart';
 import 'package:customer_e_commerce/features/user/presentation/bloc/Shop/shop_bloc.dart';
-import 'package:customer_e_commerce/features/user/presentation/widgets/my_elevated_button.dart';
 import 'package:customer_e_commerce/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

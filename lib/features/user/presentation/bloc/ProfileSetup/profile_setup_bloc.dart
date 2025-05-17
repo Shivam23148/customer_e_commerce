@@ -15,7 +15,7 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
   final GeolocatorService geolocatorService =
       serviceLocator<GeolocatorService>();
   ProfileSetupBloc() : super(ProfileSetupInitial()) {
-    on<ProfileResetEvent>((event, emit) {
+    on<ProfileSetupResetEvent>((event, emit) {
       emit(ProfileSetupInitial());
     });
     on<SaveBasicInfoEvent>((event, emit) {

@@ -74,8 +74,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         leading: _isAddressScreen()
             ? IconButton(
                 icon: Icon(Icons.arrow_back),
-                onPressed: () =>
-                    context.read<ProfileSetupBloc>().add(ProfileResetEvent()),
+                onPressed: () => context
+                    .read<ProfileSetupBloc>()
+                    .add(ProfileSetupResetEvent()),
               )
             : null,
       ),
@@ -319,7 +320,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       onPressed: () {
                         context
                             .read<ProfileSetupBloc>()
-                            .add(ProfileResetEvent());
+                            .add(ProfileSetupResetEvent());
                       },
                       icon: Icon(Icons.arrow_back)),
                   Text(
